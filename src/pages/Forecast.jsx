@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import Page from '../components/Page';
 import UserLocationForm from '../components/UserLocationForm';
 import Wrapper from '../components/styles/Wrapper';
-import services from '../services/CurrentWeather';
+import services from '../services/WeatherForecast';
 
-class Current extends Component {
+class Forecast extends Component {
   state = {
     error: '',
     hasError: false,
@@ -44,12 +44,24 @@ class Current extends Component {
           <UserLocationForm
             displayError={this.displayError}
             displayWeather={this.displayWeather}
-            geolocationRequest={services.getCurrentWeatherByGeolocation}
-            postalCodeRequest={services.getCurrentWeatherByPostalCode}
+            geolocationRequest={services.getWeatherForecastByGeolocation}
+            postalCodeRequest={services.getWeatherForecastByPostalCode}
           />
-          {hasWeather && (
-            <p>{`It is currently ${Math.round(weatherObject.main.temp)}°F in ${weatherObject.name}.`}</p>
-          )}
+          {hasWeather && weatherObject.list.map((period) => {
+            const date = new Date(period.dt_txt);
+            console.log(date);
+            return (
+              <div>
+                <p>{`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`}</p>
+                <p>{`${date.getHours()}:00`}</p>
+                <p>{`${Math.round(period.main.temp)}°F`}</p>
+                <img
+                  alt={period.weather[0].description}
+                  src={`https://openweathermap.org/img/w/${period.weather[0].icon}.png`}
+                />
+              </div>
+            );
+          })}
           {hasError && (
             <p>
               There was an error:
@@ -62,4 +74,4 @@ class Current extends Component {
   }
 }
 
-export default Current;
+export default Forecast;

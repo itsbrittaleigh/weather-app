@@ -4,11 +4,12 @@ import Button from './styles/Button';
 import FormStyles from './styles/FormStyles';
 import Input from './styles/Input';
 import Label from './styles/Label';
-import services from '../services/CurrentWeather';
 
 const propTypes = {
   displayError: PropTypes.func.isRequired,
   displayWeather: PropTypes.func.isRequired,
+  geolocationRequest: PropTypes.func.isRequired,
+  postalCodeRequest: PropTypes.func.isRequired,
 };
 
 class UserLocationForm extends Component {
@@ -24,10 +25,11 @@ class UserLocationForm extends Component {
     const {
       displayWeather,
       displayError,
+      geolocationRequest,
     } = this.props;
 
     navigator.geolocation.getCurrentPosition((position) => {
-      services.getCurrentWeatherByGeolocation(
+      geolocationRequest(
         position.coords.latitude,
         position.coords.longitude,
         displayWeather,
@@ -40,11 +42,12 @@ class UserLocationForm extends Component {
     const {
       displayWeather,
       displayError,
+      postalCodeRequest,
     } = this.props;
     const { postalCode } = this.state;
 
     event.preventDefault();
-    services.getCurrentWeatherByPostalCode(postalCode, displayWeather, displayError);
+    postalCodeRequest(postalCode, displayWeather, displayError);
   }
 
   handleUpdate = (event) => {
