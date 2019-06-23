@@ -8,6 +8,11 @@ const Button = styled.button`
   font-family: ${props => props.theme.font};
   font-size: 16px;
   padding: 10px 15px;
+
+  &.is-disabled {
+    background-color: ${props => props.theme.gray};
+    cursor: not-allowed;
+  }
 `;
 
 export default Button;

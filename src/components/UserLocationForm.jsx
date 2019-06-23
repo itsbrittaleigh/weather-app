@@ -1,74 +1,47 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Button from './styles/Button';
-import FormStyles from './styles/FormStyles';
+import FormField from './styles/FormField';
+import FormStyles from './styles/Form';
 import Input from './styles/Input';
-import Label from './styles/Label';
+import PostalCodeIsValid from '../utilities/PostalCodeIsValid';
 
 const propTypes = {
-  displayError: PropTypes.func.isRequired,
-  displayWeather: PropTypes.func.isRequired,
-  geolocationRequest: PropTypes.func.isRequired,
-  postalCodeRequest: PropTypes.func.isRequired,
+  postalCode: PropTypes.string.isRequired,
+  setPostalCode: PropTypes.func.isRequired,
+  setGeolocationData: PropTypes.func.isRequired,
+  submitPostalCode: PropTypes.func.isRequired,
 };
 
 class UserLocationForm extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      postalCode: '',
-    };
-  }
-
   handleGeolocationRequest = () => {
-    const {
-      displayWeather,
-      displayError,
-      geolocationRequest,
-    } = this.props;
+    const { setGeolocationData } = this.props;
 
-    navigator.geolocation.getCurrentPosition((position) => {
-      geolocationRequest(
-        position.coords.latitude,
-        position.coords.longitude,
-        displayWeather,
-        displayError,
-      );
-    });
+    navigator.geolocation.getCurrentPosition(position => setGeolocationData(position));
   }
 
   handleSubmit = (event) => {
-    const {
-      displayWeather,
-      displayError,
-      postalCodeRequest,
-    } = this.props;
-    const { postalCode } = this.state;
+    const { submitPostalCode } = this.props;
 
     event.preventDefault();
-    postalCodeRequest(postalCode, displayWeather, displayError);
+    submitPostalCode();
   }
 
   handleUpdate = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
+    const { setPostalCode } = this.props;
+    setPostalCode(event.target.value);
   }
 
   render() {
-    const { postalCode } = this.state;
+    const { postalCode } = this.props;
 
     return (
       <FormStyles onSubmit={this.handleSubmit}>
-        <Label
-          className={postalCode ? 'Label--lifted' : ''}
-          htmlFor="postalCode"
-        >
-          <span className="Label__text">Postal Code</span>
+        <FormField>
           <Input
             name="postalCode"
             onChange={this.handleUpdate}
+            placeholder="Postal code"
             type="tel"
             value={postalCode}
           />
@@ -80,11 +53,16 @@ class UserLocationForm extends Component {
               role="button"
               tabIndex="0"
             >
-              Use current location
+              Or use current location
             </span>
           )}
-        </Label>
-        <Button>Submit</Button>
+        </FormField>
+        <Button
+          className={!PostalCodeIsValid(postalCode) ? 'is-disabled' : ''}
+          disabled={!PostalCodeIsValid(postalCode)}
+        >
+          Submit
+        </Button>
       </FormStyles>
     );
   }

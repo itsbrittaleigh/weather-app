@@ -1,77 +1,43 @@
-import React, { Component } from 'react';
-import Page from '../components/Page';
-import UserLocationForm from '../components/UserLocationForm';
-import Wrapper from '../components/styles/Wrapper';
-import services from '../services/WeatherForecast';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Error from '../components/Error';
+import LoadingState from '../components/LoadingState';
+import Card from '../components/styles/Card';
+import PlaceholderImage from '../components/styles/PlaceholderImage';
+import ObjectIsEmpty from '../utilities/ObjectIsEmpty';
 
-class Forecast extends Component {
-  state = {
-    error: '',
-    hasError: false,
-    hasWeather: false,
-    weatherObject: {},
-  };
+const propTypes = {
+  weatherObject: PropTypes.shape({
+    list: PropTypes.array,
+  }).isRequired,
+  error: PropTypes.string.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+};
 
-  displayError = (error) => {
-    this.setState({
-      error,
-      hasError: true,
-      hasWeather: false,
-      weatherObject: {},
-    });
-  }
-
-  displayWeather = (weatherObject) => {
-    this.setState({
-      error: '',
-      hasError: false,
-      hasWeather: true,
-      weatherObject,
-    });
-  }
-
-  render() {
-    const {
-      error,
-      hasError,
-      hasWeather,
-      weatherObject,
-    } = this.state;
-
-    return (
-      <Page>
-        <Wrapper>
-          <UserLocationForm
-            displayError={this.displayError}
-            displayWeather={this.displayWeather}
-            geolocationRequest={services.getWeatherForecastByGeolocation}
-            postalCodeRequest={services.getWeatherForecastByPostalCode}
+const Forecast = ({ isLoading, error, weatherObject }) => {
+  if (isLoading) return (<LoadingState />);
+  if (error) return (<Error error={error} />);
+  if (!ObjectIsEmpty(weatherObject)) {
+    return weatherObject.list.map((period) => {
+      const date = new Date(period.dt_txt);
+      return (
+        <Card>
+          <div>
+            <p>{`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`}</p>
+            <p>{`${date.getHours()}:00`}</p>
+          </div>
+          <p>{`${Math.round(period.main.temp)}°F`}</p>
+          <img
+            alt={period.weather[0].description}
+            src={`https://openweathermap.org/img/w/${period.weather[0].icon}.png`}
           />
-          {hasWeather && weatherObject.list.map((period) => {
-            const date = new Date(period.dt_txt);
-            console.log(date);
-            return (
-              <div>
-                <p>{`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`}</p>
-                <p>{`${date.getHours()}:00`}</p>
-                <p>{`${Math.round(period.main.temp)}°F`}</p>
-                <img
-                  alt={period.weather[0].description}
-                  src={`https://openweathermap.org/img/w/${period.weather[0].icon}.png`}
-                />
-              </div>
-            );
-          })}
-          {hasError && (
-            <p>
-              There was an error:
-              {error}
-            </p>
-          )}
-        </Wrapper>
-      </Page>
-    );
+        </Card>
+      );
+    });
   }
-}
+  return (<PlaceholderImage src="weather.png" alt="cloud with sun icon" />);
+};
+
+Forecast.propTypes = propTypes;
 
 export default Forecast;

@@ -3,17 +3,18 @@ import React from 'react';
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
 import Content from './styles/Content';
 import Footer from './Footer';
-import Nav from './Nav';
 
 const theme = {
   borderRadius: '3px',
-  gray: '#AAAAAA',
-  mustard: '#FFC857',
-  charcoal: '#2E4052',
-  burgundy: '#412234',
+  boxShadow: '0 4px 4px 0 #AAAAAA',
   font: 'Lato, sans-serif',
   transition: '0.2s ease-in-out',
-  boxShadow: '0 4px 4px 0 #AAAAAA',
+  // colors
+  burgundy: '#412234',
+  charcoal: '#2E4052',
+  gray: '#AAAAAA',
+  mustard: '#FFC857',
+  vermillion: '#DD6E42',
 };
 
 const GlobalStyle = createGlobalStyle`
@@ -85,8 +86,10 @@ const GlobalStyle = createGlobalStyle`
   }
   body {
     color: ${props => props.theme.darkGray};
+    font-size: 16px;
     margin: 0;
     padding: 0;
+    text-align: center;
   }
 `;
 
@@ -100,7 +103,6 @@ const Page = ({ children }) => (
   <ThemeProvider theme={theme}>
     <Content>
       <GlobalStyle />
-      <Nav />
       <main>
         <>{children}</>
       </main>

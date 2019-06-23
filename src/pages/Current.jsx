@@ -1,65 +1,32 @@
-import React, { Component } from 'react';
-import Page from '../components/Page';
-import UserLocationForm from '../components/UserLocationForm';
-import Wrapper from '../components/styles/Wrapper';
-import services from '../services/CurrentWeather';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Error from '../components/Error';
+import LoadingState from '../components/LoadingState';
+import PlaceholderImage from '../components/styles/PlaceholderImage';
+import ObjectIsEmpty from '../utilities/ObjectIsEmpty';
 
-class Current extends Component {
-  state = {
-    error: '',
-    hasError: false,
-    hasWeather: false,
-    weatherObject: {},
-  };
+const propTypes = {
+  weatherObject: PropTypes.shape({
+    main: PropTypes.shape({
+      temp: PropTypes.number,
+    }),
+    name: PropTypes.string,
+  }).isRequired,
+  error: PropTypes.string.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+};
 
-  displayError = (error) => {
-    this.setState({
-      error,
-      hasError: true,
-      hasWeather: false,
-      weatherObject: {},
-    });
-  }
-
-  displayWeather = (weatherObject) => {
-    this.setState({
-      error: '',
-      hasError: false,
-      hasWeather: true,
-      weatherObject,
-    });
-  }
-
-  render() {
-    const {
-      error,
-      hasError,
-      hasWeather,
-      weatherObject,
-    } = this.state;
-
+const Current = ({ isLoading, error, weatherObject }) => {
+  if (isLoading) return (<LoadingState />);
+  if (error) return (<Error error={error} />);
+  if (!ObjectIsEmpty(weatherObject)) {
     return (
-      <Page>
-        <Wrapper>
-          <UserLocationForm
-            displayError={this.displayError}
-            displayWeather={this.displayWeather}
-            geolocationRequest={services.getCurrentWeatherByGeolocation}
-            postalCodeRequest={services.getCurrentWeatherByPostalCode}
-          />
-          {hasWeather && (
-            <p>{`It is currently ${Math.round(weatherObject.main.temp)}°F in ${weatherObject.name}.`}</p>
-          )}
-          {hasError && (
-            <p>
-              There was an error:
-              {error}
-            </p>
-          )}
-        </Wrapper>
-      </Page>
+      <p>{`It is currently ${Math.round(weatherObject.main.temp)}°F in ${weatherObject.name}.`}</p>
     );
   }
-}
+  return (<PlaceholderImage src="weather.png" alt="cloud with sun icon" />);
+};
+
+Current.propTypes = propTypes;
 
 export default Current;
