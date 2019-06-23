@@ -1,10 +1,10 @@
 /* eslint-disable react/jsx-filename-extension */
 import { shallow } from 'enzyme';
 import React from 'react';
-import App from '../App';
+import Error from '../../components/Error';
 
-describe('<App /> component', () => {
+describe('<Error /> component', () => {
   test('renders without crashing', () => {
-    shallow(<App />);
+    shallow(<Error error="I am an error message." />);
   });
 });

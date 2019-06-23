@@ -1,10 +1,10 @@
 /* eslint-disable react/jsx-filename-extension */
 import { shallow } from 'enzyme';
 import React from 'react';
-import App from '../App';
+import Nav from '../../components/Nav';
 
-describe('<App /> component', () => {
+describe('<Nav />', () => {
   test('renders without crashing', () => {
-    shallow(<App />);
+    shallow(<Nav />);
   });
 });

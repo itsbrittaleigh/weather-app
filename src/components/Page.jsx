@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import PropTypes from 'prop-types';
 import React from 'react';
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
@@ -93,12 +94,6 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const propTypes = {
-  children: PropTypes.shape({
-    props: PropTypes.isRequired,
-  }).isRequired,
-};
-
 const Page = ({ children }) => (
   <ThemeProvider theme={theme}>
     <Content>
@@ -110,7 +105,5 @@ const Page = ({ children }) => (
     </Content>
   </ThemeProvider>
 );
-
-Page.propTypes = propTypes;
 
 export default Page;

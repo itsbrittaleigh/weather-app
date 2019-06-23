@@ -1,10 +1,10 @@
 /* eslint-disable react/jsx-filename-extension */
 import { shallow } from 'enzyme';
 import React from 'react';
-import App from '../App';
+import LoadingState from '../../components/LoadingState';
 
-describe('<App /> component', () => {
+describe('<LoadingState /> component', () => {
   test('renders without crashing', () => {
-    shallow(<App />);
+    shallow(<LoadingState />);
   });
 });
